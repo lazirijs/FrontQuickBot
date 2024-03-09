@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
   <title>Facebook Login</title>
 </head>
 <body>
@@ -13,47 +14,6 @@
 <p id="profile"></p>
 
 <script>
-const login = () => {
-  console.log('login');
-  // Function to initialize the Facebook SDK
-  const initializeFacebookSDK = () => {
-    window.fbAsyncInit = function() {
-      FB.init({
-        appId: '873078997836012',
-        xfbml: true,
-        version: 'v12.0'
-      });
-
-      // Check the login status
-      FB.getLoginStatus(response => {
-        if (response.status === 'connected') {
-          // If the user is already logged in, fetch their information
-          fetchUserInfo();
-        } else {
-          // If the user is not logged in, show the login dialog
-          FB.login(loginResponse => {
-            if (loginResponse.authResponse) {
-              // If login is successful, fetch user information
-              fetchUserInfo();
-            } else {
-              // Handle login failure
-              console.log('User cancelled login or did not fully authorize.');
-            }
-          }, { scope: 'public_profile,email' });
-        }
-      });
-    };
-
-    // Load the Facebook SDK asynchronously
-    (function(d, s, id) {
-      var js, fjs = d.getElementsByTagName(s)[0];
-      if (d.getElementById(id)) { return; }
-      js = d.createElement(s); js.id = id;
-      js.src = "https://connect.facebook.net/en_US/sdk.js";
-      fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
-  };
-
   // Function to fetch user information
   const fetchUserInfo = () => {
     FB.api('/me', { fields: 'name, email' }, response => {
@@ -61,9 +21,43 @@ const login = () => {
     });
   };
 
-  // Set up the Facebook SDK after the window has fully loaded
-  window.onload = initializeFacebookSDK;
-};
+  // Function to handle login
+  const login = () => {
+    FB.getLoginStatus(response => {
+      if (response.status === 'connected') {
+        // If the user is already logged in, fetch their information
+        fetchUserInfo();
+      } else {
+        // If the user is not logged in, show the login dialog
+        FB.login(loginResponse => {
+          if (loginResponse.authResponse) {
+            // If login is successful, fetch user information
+            fetchUserInfo();
+          } else {
+            // Handle login failure
+            console.log('User cancelled login or did not fully authorize.');
+          }
+        }, { scope: 'public_profile,email' });
+      }
+    });
+  };
+
+  // Load the Facebook SDK asynchronously
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId            : '873078997836012',
+      xfbml            : true,
+      version          : 'v19.0'
+    });
+  };
+
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "https://connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
 </script>
 
 </body>
