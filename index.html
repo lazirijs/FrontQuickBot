@@ -8,14 +8,16 @@
 <body>
 
 <h2>Add Facebook Login to your webpage</h2>
-
+<button onClick="login()">login</button>
 <!-- Set the element id for the JSON response -->
 <p id="profile"></p>
 
 <script>
+const login = () => {
+console.log('login');
   // Function to initialize the Facebook SDK
-  function initializeFacebookSDK() {
-    (function(d, s, id) {
+  const initializeFacebookSDK = () => {
+    ((d, s, id) => {
       var js, fjs = d.getElementsByTagName(s)[0];
       if (d.getElementById(id)) { return; }
       js = d.createElement(s); js.id = id;
@@ -25,17 +27,17 @@
   }
 
   // Function to fetch user information
-  function fetchUserInfo() {
-    FB.api('/me', { fields: 'name, email' }, function(response) {
+  const fetchUserInfo = () => {
+    FB.api('/me', { fields: 'name, email' }, response => {
       document.getElementById("profile").innerHTML = "Good to see you, " + response.name + ". I see your email address is " + response.email;
     });
   }
 
   // Set up the Facebook SDK after the window has fully loaded
-  window.onload = function () {
+  window.onload = () => {
     initializeFacebookSDK();
 
-    window.fbAsyncInit = function() {
+    window.fbAsyncInit = () => {
       FB.init({
         appId: '873078997836012',
         xfbml: true,
@@ -43,13 +45,13 @@
       });
 
       // Check the login status
-      FB.getLoginStatus(function(response) {
+      FB.getLoginStatus(response => {
         if (response.status === 'connected') {
           // If the user is already logged in, fetch their information
           fetchUserInfo();
         } else {
           // If the user is not logged in, show the login dialog
-          FB.login(function(loginResponse) {
+          FB.login(loginResponse => {
             if (loginResponse.authResponse) {
               // If login is successful, fetch user information
               fetchUserInfo();
@@ -62,6 +64,7 @@
       });
     };
   };
+};
 </script>
 
 </body>
